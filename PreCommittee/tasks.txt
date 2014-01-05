@@ -1,7 +1,7 @@
 
 tasks - client:
 
-1. solve rtl value display in amount text box
+1. add rotate and zoom buttons and functionality
 2. get article name by ID (via AJAX request to existing api)
 3. input validation before page save
 4. file loading indicator
@@ -10,12 +10,15 @@ tasks - client:
 7. save transfers on input blur
 8. article ID textbox - limit to digits, 6 chars, "digit" font
 9. add row - automatic after article ID input is entered
-10. remove save / clean / add row buttons - make transfers area more dense
 11. keyboard events - left, right, flip, zoom
 
 tasks - server:
 
-1. 
+1. change data structure: committee - request - table - transfer
+
+
+http://stackoverflow.com/questions/18887950/date-picker-for-bootstrap-3
+https://github.com/lou/switchy
 
 
 

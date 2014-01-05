@@ -12,25 +12,59 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
-PAGES_STUB = [{
-    'pageId': '1',
-    'pageNumber': None,
-    'image': '/files/Page_04.jpg',
-    'transfers': [{
-        'articleId':'012003',
-        'amount':'30'
+ITEMS_STUB = [{
+        'id': '111',
+        'image': '/files/Page_04.jpg',
+        'type': 1,  # request
+        'meta': {
+            'date': 1386005728648,
+            'tables': ['25-001', '26-039']
+        }
+    },{
+        'id': '222',
+        'image': '/files/Page_09.jpg',
+        'type': 2,  # table
+        'meta': {
+            'tableNum' : '25-001',
+            'transfers' : [{
+                        'id' : '1000',
+                        'articleId' : '250012',
+                        'amount' : '10'
+                    }, {
+                        'id' : '1002',
+                        'articleId' : '100030',
+                        'amount' : '15'
+                    }
+                ]
+            }
+    },{
+        'id': '333',
+        'image': '/files/Page_26.jpg',
+        'type': 2,  # table
+        'meta' : {
+            'tableNum' : '26-039',
+            'transfers' : [{
+                        'id' : '1001',
+                        'articleId' : '033009',
+                        'amount' : '20'
+                    }
+                ]
+            }
     }]
-},{
-    'pageId': '2',
-    'pageNumber': None,
-    'image': '/files/Page_09.jpg',
-    'transfers': None
-},{
-    'pageId': '3',
-    'pageNumber': None,
-    'image': '/files/Page_26.jpg',
-    'transfers': None
-}]
+
+ITEMS_STUB_NEW = [{
+        'id': '111',    
+        'image': '/files/Page_04.jpg',
+        'type': None
+    },{
+        'id': '222',
+        'image': '/files/Page_09.jpg',
+        'type': None
+    },{
+        'id': '333',
+        'image': '/files/Page_26.jpg',
+        'type': None
+    }]
 
 
 class MainPage(webapp2.RequestHandler):
@@ -60,41 +94,39 @@ class UploadFile(webapp2.RequestHandler):
         self.response.out.write(json.dumps(obj))
 
 
-class Request(webapp2.RequestHandler):
+class Committee(webapp2.RequestHandler):
     
     def get(self):
 
-        requestId = self.request.get("id")
+        committeeId = self.request.get("id")
 
-        request = {
-            'id': requestId,
-            'pages': PAGES_STUB,
-            'committeeDate': 1388527200000,
-            'requestDate': 1388354400000
+        committee = {
+            'id': committeeId,
+            'committeeDate': 1389218400000,
+            'committee_items': ITEMS_STUB_NEW
         } # TODO: get this object from DB
 
-        if requestId is None:
+        if committeeId is None:
            template_values = {}
             # TODO: create a page with a list of all requests
         else:
             template_values = {                
-                'request': request
+                'committee': committee
             }
-            template_name = 'requestEdit.html'
+            template_name = 'committee.html'
 
         template = JINJA_ENVIRONMENT.get_template(template_name)
         self.response.write(template.render(template_values))
 
     def post(self):
-
-        reqDate = self.request.get("requestDate")
-        comDate = self.request.get("committeeDate")
+        
+        comDate = self.request.get("committeeDateVal")
         fileUrl = self.request.get("requestFileUrl")
 
         # TODO: break pdf to images and save request and its pages to DB
         
         query_params = {'id': '123'}  # TODO:  replace with the created request's ID
-        self.redirect('/request?' + urllib.urlencode(query_params))
+        self.redirect('/committee?' + urllib.urlencode(query_params))
 
 
 class Page(webapp2.RequestHandler):
@@ -117,6 +149,6 @@ class Page(webapp2.RequestHandler):
 application = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/uploadFile', UploadFile),
-    ('/request', Request),
+    ('/committee', Committee),
     ('/page', Page)
 ], debug=True)
